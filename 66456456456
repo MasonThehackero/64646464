@@ -1,0 +1,152 @@
+ #ifndef CURRENCY_H
+        #define CURRENCY_H
+        #include <map>
+
+        class Converter {
+            private:
+                std::map<std::string, double> currency;
+                std::map<std::string, std::string> symbol;
+            public:
+                Converter();
+                std::string getSymbol(std::string currency);
+                long convertCurrency(std::string c1, std::string c2, long amount);
+        };
+
+        #endif  #include <iostream>
+        #include "converter.h"
+
+        Converter::Converter(){
+            currency["usd-gbp"] = 0.6392;
+            currency["usd-cad"] = 1.0478;
+            currency["usd-eur"] = 0.7494; 
+            currency["usd-jpy"] = 97.821; 
+            currency["usd-aud"] = 1.1151;
+            currency["usd-chf"] = 0.9232;
+            symbol["usd"] = "$";
+
+            currency["gbp-usd"] = 1.5646;
+            currency["gbp-cad"] = 1.6393;
+            currency["gbp-eur"] = 1.1726;
+            currency["gbp-jpy"] = 153.0483;
+            currency["gbp-aud"] = 1.7447;
+            currency["gbp-chf"] = 1.4443;
+            symbol["gbp"] = "£";
+
+            currency["aud-usd"] = 0.8968;
+            currency["aud-gbp"] = 0.5732;
+            currency["aud-cad"] = 0.9396;
+            currency["aud-eur"] = 0.6721;
+            currency["aud-jpy"] = 87.7225;
+            currency["aud-chf"] = 0.8278;
+            symbol["aud"] = "$";
+
+
+            currency["cad-usd"] = 0.9544;
+            currency["cad-gbp"] = 0.61;
+            currency["cad-aud"] = 1.4879;
+            currency["cad-eur"] = 0.7153;
+            currency["cad-jpy"] = 93.3629;
+            currency["cad-chf"] = 0.8811;
+            symbol["cad"] = "C$";
+
+            currency["eur-usd"] = 1.3343;
+            currency["eur-gbp"] = 0.8528;
+            currency["eur-aud"] = 1.4879;
+            currency["eur-cad"] = 1.398;
+            currency["eur-jpy"] = 130.526;
+            currency["eur-chf"] = 1.2318;
+            symbol["eur"] = "€";
+
+            currency["jpy-usd"] = 0.0102;
+            currency["jpy-gbp"] = 0.0065;
+            currency["jpy-aud"] = 0.0114;
+            currency["jpy-cad"] = 0.0107;
+            currency["jpy-eur"] = 0.0077;
+            currency["jpy-chf"] = 0.0094;
+            symbol["jpy"] = "¥";
+
+            currency["chf-usd"] = 0.0065;
+            currency["chf-gbp"] = 0.6924;
+            currency["chf-aud"] = 1.2079;
+            currency["chf-cad"] = 1.135;
+            currency["chf-eur"] = 0.8118;
+            currency["chf-jpy"] = 105.9644;
+            symbol["chf"] = "CHF ";
+        }
+
+        std::string Converter::getSymbol(std::string currency){
+            return symbol[currency];
+        }
+
+        long Converter::convertCurrency(std::string c1, std::string c2, long amount){
+            std::string key = c1 + "-" + c2;
+            for(int idx = 0; idx < currency.size(); idx++){
+                if(currency.find(key) != currency.end()){
+                    double conversion = currency[key]; 
+                    conversion *= (double)amount;
+                    return (long)conversion;
+                } 
+            }
+        }          #ifndef MONEY_H
+        #define MONEY_H
+        #include <iostream>
+        #include <iomanip>
+
+        class Cents {
+            private:
+                long outputCents;
+                double inputCents;
+            public:
+                Cents(long nCents = 0){
+                    outputCents = nCents;
+                }
+
+                long getLong(){ return outputCents; }
+
+                friend std::ostream& operator<< (std::ostream &out, Cents &cCents){
+                    out << std::fixed << std::setprecision(2) << (double)cCents.outputCents/100;
+                    return out;
+                }
+
+                friend std::istream& operator>> (std::istream &in, Cents &cCents){
+                    in >> cCents.inputCents;
+                    cCents.inputCents *= 100;
+                    cCents.inputCents += 0.5;
+                    cCents.outputCents = cCents.inputCents;
+                    std::cin.ignore(3, '\n');
+                    return in;
+                }
+        };
+
+        #endif  #include <iostream>
+#include "cents.h"
+#include "converter.h"
+
+using namespace std;
+
+int main(){
+    cout << "### Currency Converter ###\n";
+    cout << "USD, GBP, CAD, EUR, JPY, AUD, CHF\n";
+
+    string currency1, currency2;
+
+    cout << "-Enter currency to convert from:\n";
+    getline(cin, currency1);
+
+    cout << "-Enter currency to convert to:\n";
+    getline(cin, currency2);
+
+    Cents amount;
+    cout << "-Enter amount:\n";
+    cin >> amount;
+
+    Converter convert;
+    Cents product = convert.convertCurrency(currency1, currency2, amount.getLong());
+    if(product.getLong() > 0){
+        cout << convert.getSymbol(currency2) << product << endl;
+    } else {
+        cout << "Currency not found!\n";
+    }
+
+    return 0;
+} 
