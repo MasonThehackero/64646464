@@ -144,7 +144,19 @@ int main(){
     Cents product = convert.convertCurrency(currency1, currency2, amount.getLong());
     if(product.getLong() > 0){
         cout << convert.getSymbol(currency2) << product << endl;
-    } else {
+    } else { Run aws-actions/configure-aws-credentials@v1
+  with:
+    aws-region: MY_AWS_REGION
+    audience: sts.amazonaws.com
+  env:
+    AWS_REGION: MY_AWS_REGION
+    ECR_REPOSITORY: MY_ECR_REPOSITORY
+    ECS_SERVICE: MY_ECS_SERVICE
+    ECS_CLUSTER: MY_ECS_CLUSTER
+    ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION
+    CONTAINER_NAME: MY_CONTAINER_NAME
+Error: Region is not valid: MY_AWS_REGION
+
         cout << "Currency not found!\n";
     }
 
